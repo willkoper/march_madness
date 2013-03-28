@@ -3,8 +3,8 @@
 function db_handle (){
 	
 	$dsn = 'mysql:dbname=madness;host=localhost';
-	$user = 'will';
-	$p = 'koper';
+	$user = 'xxxx';
+	$p = 'xxxxx';
 	try{
 		$c = new PDO($dsn, $user, $p);
 		return $c;
