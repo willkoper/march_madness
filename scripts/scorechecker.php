@@ -19,12 +19,13 @@ function jsonp_decode($jsonp, $assoc = false) { // PHP 5.3 adds depth as third p
     return json_decode(trim($jsonp,'();'), $assoc);
 }
 function read_game_data(){
+	
 	//get the game data
 	$url = 'http://data.ncaa.com/jsonp/gametool/brackets/championships/basketball-men/d1/2012/data.json?callback=foo';
 	// $url = '../data/dummydata.json';
-
 	$raw_data = file_get_contents($url);
-	echo("data fetched. parsing ....");
+	$timeToFetch = time() - $fetchStart;
+	echo("data fetched in $timeToFetch seconds. parsing ....");
 	$data = jsonp_decode($raw_data, true);
 	$gamesToWatch = get_games_list();
 	$output = array();
@@ -32,8 +33,9 @@ function read_game_data(){
 	foreach ($data["games"] as $game){
 		$gameID = $game["contestId"];
 		if (array_key_exists($gameID, $gamesToWatch)){
-			$minsLeft = substr($gamep["timeclock"]);
-			if($minsLeft <5){
+			
+			$minsLeft = substr($game["timeclock"], 0, 1);
+			if($minsLeft && $minsLeft <5){
 				$fave = $gamesToWatch[$gameID]["fave"];
 				$faveScore = $game[$fave]["score"];
 				$dog = $gamesToWatch[$gameID]["under_dog"];
@@ -54,4 +56,4 @@ function read_game_data(){
 $games = read_game_data();
 $elapsed = time() - $script_start;
 var_dump($games);
-echo $elapsed;
+echo "data fetched and parsed in $elapsed seconds";
